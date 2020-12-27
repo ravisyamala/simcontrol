@@ -3,77 +3,141 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="public/vendor/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="public/vendor/bootstrap-material-design/dist/css/ripples.min.css">
-    <link rel="stylesheet" href="public/vendor/bootstrap-material-design/dist/css/material.min.css">
-    <!-- build:css style/app.min.css -->
-    <link rel="stylesheet" href="public/style/main.css">
-    <!-- endbuild -->
-    <!-- <link rel="localization" href="locales/manifest.json"> -->
 
-    <!-- build:js js/app.min.js -->
-    <!-- <script defer src="vendor/l20n/l20n.min.js"></script> -->
-    <!-- endbuild -->
-    <title>Webby Mouse</title>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<!-- Bootstrap core CSS -->
+<link href="/public/vendor/mdb/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="/public/vendor/mdb/css/mdb.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="public/style/main.css">
+    <title>Simmy View</title>
   </head>
-  <body>
-    <header class="navbar navbar-inverse navbar-fixed-top shadow-z-2" role="navigation">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle pull-left" data-toggle="collapse" data-target="#pushMenu">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <!-- <i class="mdi-navigation-menu"></i> -->
-        </button>
-        <a class="navbar-brand" href="#" data-l10n-id="projectName">Webby Mouse</a>
-      </div>
-      <div class="collapse navbar-collapse" id="pushMenu">
-        <ul class="nav navbar-nav">
-          <li id="touch-ctrl" class="active">
-            <a href="#"><i class="mdi-hardware-mouse"></i> Touch Control</a>
-          </li>
-          <li id="motion-ctrl">
-            <a href="#"><i class="mdi-maps-my-location"></i> Motion Control</a>
-          </li>
-          <li id="present-ctrl">
-            <a href="#"><i class="mdi-image-collections"></i> Presentation Control</a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <div class="togglebutton">
-            <label class="navbar-item">
-            <input type="checkbox" name="checkbox" id="fullscreen-toggle" autocomplete="off"></input>
-            Fullscreen <span class="toggle pull-right"></span>
-            </label>
-            </div>
-          </li>
-          <li class="hidden" id="portrait">
-            <a href="#">
-            <i class="mdi-communication-stay-current-portrait"></i> Portrait
-            </a>
-          </li>
-          <li class="hidden" id="landscape">
-            <a href="#">
-              <i class="mdi-communication-stay-current-landscape"></i> Landscape
-            </a>
-          </li>
-          <li class="divider"></li>
-          <li><a href="#" id="passcode"><i class="mdi-notification-vpn-lock"></i> Pass Code</a></li>
-          <li class="divider"></li>
-          <li><a href="#" id="about">About</a></li>
-        </ul>
-      </div>
+  <body class="black-skin pt-4 disable-dbl-tap-zoom" style="background-color: black;">
+
+    <!--Double navigation-->
+    <header>
+      
+     
+      <!-- /.Navbar -->
     </header>
-    <div class="touchpad" id="touchpad"></div>
-    <script defer src="/public/vendor/jquery/dist/jquery.min.js"></script>
-    <script defer src="/public/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script defer src="/public/vendor/bootstrap-material-design/dist/js/ripples.min.js"></script>
-    <script defer src="/public/vendor/bootstrap-material-design/dist/js/material.min.js"></script>
-    <script defer src="/socket.io/socket.io.js"></script>
-    <script defer src="/public/vendor/hammerjs/hammer.min.js"></script>
+    <!--/.Double navigation-->
+
+    <!--Main layout-->
+    <main style="">
+      <div class="container-fluid unselectable pr-4">
+        <div class="row unselectable">
+        <div class="col-3 p-1 wow fadeIn " id="logo">
+                 <!-- SideNav slide-out button -->
+<a href="#" data-activates="slide-out" class="btn btn-dark p-3 button-collapse"><i class="fas fa-golf-ball"></i></a>
+
+<!-- Sidebar navigation -->
+<div id="slide-out" class="side-nav2 side special-color-dark">
+<ul class="custom-scrollbar">
+  <!-- Logo -->
+  <li>
+    <div class="logo-wrapper waves-light">
+      <a href="#"><img src="https://mdbootstrap.com/img/logo/mdb-transparent.png"
+          class="img-fluid flex-center"></a>
+    </div>
+  </li>
+  <!--/. Logo -->
+  <!--Social-->
+  <li>
+    <ul class="social">
+      <li><a href="#" class="icons-sm fb-ic"><i class="fab fa-facebook-f"> </i></a></li>
+      <li><a href="#" class="icons-sm pin-ic"><i class="fab fa-pinterest"> </i></a></li>
+      <li><a href="#" class="icons-sm gplus-ic"><i class="fab fa-google-plus-g"> </i></a></li>
+      <li><a href="#" class="icons-sm tw-ic"><i class="fab fa-twitter"> </i></a></li>
+    </ul>
+  </li>
+  <!--/Social-->
+  <!--Search Form-->
+  <li>
+    <form class="search-form" role="search">
+      <div class="form-group md-form mt-0 pt-1 waves-light">
+        <input type="text" class="form-control" placeholder="Search">
+      </div>
+    </form>
+  </li>
+  <!--/.Search Form-->
+  <!-- Side navigation links -->
+  <li>
+    <ul class="collapsible collapsible-accordion">
+      <li><a class="collapsible-header waves-effect"><i class="fas fa-chevron-right"></i> Submit
+          blog</a>
+      </li>
+      <li><a class="collapsible-header waves-effect"><i class="far fa-hand-pointer"></i>
+          Instruction</a>
+      </li>
+      <li><a class="collapsible-header waves-effect"><i class="fas fa-eye"></i> About</a>
+      </li>
+      <li><a class="collapsible-header waves-effect"><i class="far fa-envelope"></i> Contact me</a>
+      </li>
+    </ul>
+  </li>
+  <!--/. Side navigation links -->
+</ul>
+<div class="sidenav-bg"></div>
+</div>  
+        </div> 
+
+  
+
+            <div class="col-9 p-1 pr-0 view view-cascade overlay wow fadeIn ">
+              <img src="" class="img-fluid" id="topView">
+            </div> 
+          </div>
+        <div class="row unselectable">
+          <div class="col-3 p-0 m-0">
+            <div class="btn-toolbar unselectable" role="toolbar" aria-label="Toolbar with button groups">
+              <div class="btn-group-vertical shadow-0 mr-0 unselectable" role="group">
+                  <button class="btn btn-default btn-sm actions" id="putter">Putter</button>
+                  <button class="btn btn-default btn-sm actions" id="viewHole">Change View</button>
+                  <!--<a class="btn btn-default btn actions" id="freeFloat">Free Float</a>-->
+                  <button class="btn btn-default btn-sm actions" id="greenGrid">Green Grid</button>
+                  <button class="btn btn-default btn-sm actions" id="losInvisible">Obstacle View</button>
+                  <button class="btn btn-default btn-sm actions" id="clubUp">Mulligan</button>
+                  <button class="btn btn-default btn-sm actions" id="clubDown">Sim Drop</button>
+                  <button class="btn-dark arrows btn btn-default btn-sm actions" id="keyLeft"><i class="fas fa-arrow-left"></i></button>
+                  <button class="btn-dark arrows btn btn-default btn-sm actions" id="keyRight"><i class="fas fa-arrow-right"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="col-9 pl-1 pt-1 pb-0 pr-0 m-0">
+            <div class="mainView view-cascade overlay wow fadeIn">
+              <img src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/8-col/img (132).jpg" class="img-fluid" id="mainView">
+
+            </div> 
+            <div class="mask pattern-8 flex-center">
+              <p class="white-text">.pattern-8</p>
+          </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+    <!--/Main layout-->
+
+  </body>
+    <!--<script defer src="/public/vendor/jquery/dist/jquery.min.js"></script>-->
+<!-- JQuery -->
+<script type="text/javascript" src="/public/vendor/mdb/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="/public/vendor/mdb/js/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/public/vendor/mdb/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script  type="text/javascript" src="/public/vendor/mdb/js/mdb.min.js"></script>
+    <script  src="/socket.io/socket.io.js"></script>
+    <script  src="/public/vendor/hammerjs/hammer.min.js"></script>
+    <script  src="/public/js/queue.js"></script>
     <!-- mouse client -->
-    <script defer src="/public/js/client.js"></script>
+    <script  src="/public/js/client.js"></script>
+
   </body>
 </html>
 

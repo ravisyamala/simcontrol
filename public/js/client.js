@@ -2,13 +2,15 @@
 /* global io, Hammer, $ */
 'use strict';
 
-var touchElem = document.getElementById('touchpad');
+var touchElem = document.getElementById('mainView');
 var socket = io();
 var delta = null;
 var moving = false;
-var ori = 'portrait';
-var control = 'touch';
 var passcode = '';
+var curKey = ''; 
+var mainViewSet = FixedQueue(2); 
+var topViewSet = FixedQueue(2); 
+var keyInterval; 
 
 var pos = {x: 0, y: 0, cmd: null, pw: ''};
 /**
@@ -28,172 +30,152 @@ var emitMouse = function(x, y, cmd) {
   socket.emit('mouse', pos);
 };
 
-// receive msg
-//socket.on('mouse', function(msg) {
-//console.log(msg);
-//console.info(msg.x + ',' + msg.y);
-//});
+var emitKeyboard = function(cmd){
+  socket.emit('key', cmd)
+}
+
+socket.on('update-map', function(msg){
+  //console.log(msg); 
+  var arrayBuff = new Uint8Array(msg); 
+  var blob = new Blob([arrayBuff], {type: 'image/png'}); 
+  var urlCreate = window.URL || window.webkitURL; 
+  var imageUrl = urlCreate.createObjectURL(blob);
+  var img = new Image(); 
+  img.src = imageUrl; 
+  mainViewSet.push(img); 
+  $("#mainView").attr('src', mainViewSet[0].src);
+}); 
+
+
+socket.on('update-scoreboard', function(msg){
+  //console.log(msg); 
+  var arrayBuff = new Uint8Array(msg); 
+  var blob = new Blob([arrayBuff], {type: 'image/png'}); 
+  var urlCreate = window.URL || window.webkitURL; 
+  var imageUrl = urlCreate.createObjectURL(blob);
+  var img = new Image(); 
+  img.src = imageUrl; 
+  topViewSet.push(img); 
+  $("#topView").attr('src', topViewSet[0].src);
+}); 
+
+var handleKeyDown = function(e){
+  e = e || window.event;
+  var myId = (e.currentTarget || e.srcElement ).id;
+  curKey=myId; 
+  console.log('mouse down received: '+ curKey); 
+  emitKeyboard(myId);  
+  keyInterval = setInterval(function(){
+    console.log('mouse down sent: '+ curKey); 
+    emitKeyboard(myId);  
+    },100);
+    return false;
+}; 
+
+
+var handleKeyUpOut = function(e){
+  e = e || window.event;
+  var myId = (e.currentTarget || e.srcElement).id;
+  console.log('mouse up received: '+ curKey); 
+  curKey=''; 
+  clearInterval(keyInterval);
+  return false;  
+}; 
 
 var handlePan = function(eventName, e) {
-  if (e.type == eventName + 'start') {
+  if (e.type == eventName + 'start' || e.type=='press') {
     delta = null;
     moving = true;
     console.log('start ' + eventName);
     emitMouse(0, 0, eventName + 'start');
   }
-  if (e.type == eventName + 'end') {
+  if (e.type == eventName + 'end'||e.type=='pressup') {
     delta = null;
     moving = false;
     emitMouse(0, 0, eventName + 'end');
   }
   if (moving && delta != null) {
-    emitMouse(e.deltaX - delta.x, e.deltaY - delta.y, eventName);
+    var rect = e.target.getBoundingClientRect();
+      var x = e.srcEvent.clientX - rect.left; //x position within the element.
+      var y = e.srcEvent.clientY - rect.top;  //y position within the element.
+      //console.log('wanna send: '+x + ',' + y); 
+      //console.log('but sending: '+e.deltaX - delta.x+','+e.deltaY - delta.y);
+    //emitMouse(e.deltaX - delta.x, e.deltaY - delta.y, eventName);
+    emitMouse(x,y,eventName); 
   }
   delta = {x: e.deltaX, y: e.deltaY};
 };
 
 var mc = new Hammer.Manager(touchElem);
 mc.add(new Hammer.Pan({event: 'move', threshold: 0, pointers: 1,
-  direction: Hammer.DIRECTION_ALL}));
+ direction: Hammer.DIRECTION_ALL}));
 mc.add(new Hammer.Pan({event: 'scroll', threshold: 0, pointers: 2,
   direction: Hammer.DIRECTION_ALL}));
-mc.add(new Hammer.Pan({event: 'drag', threshold: 0, pointers: 3,
-  direction: Hammer.DIRECTION_ALL}));
+mc.add(new Hammer.Press({event: 'press'})); 
+mc.add(new Hammer.Pan({threshold: 0,  direction: Hammer.DIRECTION_ALL}) );
 mc.add(new Hammer.Tap({event: 'click', pointers: 1}));
 mc.add(new Hammer.Tap({event: 'rightclick', pointers: 2}));
-mc.on('movestart moveend moveup movedown moveleft moveright', function(e) {
-  if (control !== 'motion') {
-    handlePan('move', e);
-  }
-});
+mc.on('movestart moveend moveup movedown moveleft moveright', 
+  function(e) {
+      handlePan('move', e);
+  });
 mc.on('scrollstart scrollend scrollup scrolldown scrollleft scrollright',
   function(e) {
     handlePan('scroll', e);
   });
-mc.on('dragstart dragend dragup dragdown dragleft dragright', function(e) {
-  handlePan('drag', e);
+mc.on('pan panstart panend panup pandown panleft panright', function(e) {
+  handlePan('pan', e);
+});
+mc.on('press pressup', function(e) {
+  handlePan('press', e);
 });
 mc.on('click', function(e) {
   console.info('click');
-  if (control === 'present') {
-    emitMouse(0, 0, 'right');
-  } else {
-    emitMouse(0, 0, 'click');
-  }
+  emitMouse(0, 0, 'click');
 });
 mc.on('rightclick', function(e) {
   console.info('rightclick');
-  if (control === 'present') {
-    emitMouse(0, 0, 'left');
-  } else {
-    emitMouse(0, 0, 'rightclick');
-  }
+  emitMouse(0, 0, 'rightclick');
 });
 
 // menu functions
-document.body.requestFullscreen = document.body.requestFullScreen ||
-  document.body.webkitRequestFullScreen ||
-  document.body.mozRequestFullScreen ||
-  document.body.msRequestFullScreen;
-document.cancelFullscreen = document.exitFullscreen ||
-  document.webkitExitFullscreen ||
-  document.mozCancelFullScreen ||
-  document.msExitFullscreen;
+$('.actions').on('click',function(event){
+  emitKeyboard(event.target.id); 
+}); 
 
-$('#fullscreen-toggle').click(function() {
-  if (this.checked) {
-    document.body.requestFullscreen();
-  } else {
-    document.cancelFullscreen();
+var isTouchDevice = 'ontouchstart' in document.documentElement;
+    
+$(".arrows").on("mousedown",function(event) {
+    if (isTouchDevice == false) {   
+        handleKeyDown(event); 
+    }
+});
+
+$(".arrows").on("mouseup",function(event) {
+    if (isTouchDevice == false) {   
+        handleKeyUpOut(event); 
+    }
+});
+
+$(".arrows").on("mouseout",function(event) {
+  if (isTouchDevice == false) {   
+      handleKeyUpOut(event); 
   }
 });
 
-var lockOrientation = function() {
-  if (document.fullscreen) {
-    screen.lockOrientation = screen.lockOrientation ||
-      screen.mozLockOrientation || screen.msLockOrientation;
-    // update menu
-    if (ori === 'portrait') {
-      $('#portrait').removeClass('hidden');
-      $('#landscape').addClass('hidden');
-    } else {
-      $('#landscape').removeClass('hidden');
-      $('#portrait').addClass('hidden');
+$('.arrows').on('touchstart', function(){
+    if (isTouchDevice)  {   
+      handleKeyDown(event); 
     }
-
-    if (screen.lockOrientation) {
-      return screen.lockOrientation(ori + '-primary');
-    } else {
-      return screen.orientation.lock(ori + '-primary');
+});
+$('.arrows').on('touchend', function(){
+    if (isTouchDevice)  {   
+      handleKeyUpOut(event); 
     }
-  } else {
-    // update menu
-    $('#portrait').addClass('hidden');
-    $('#landscape').addClass('hidden');
-  }
-};
-
-$(window).on('fullscreenchange mozfullscreenchange webkitfullscreenchange ' +
-  'msfullscreenchange', function() {
-  document.fullscreen = (document.mozFullScreen ||
-    document.webkitIsFullScreen || document.msFullscreen) === true;
-  $('#fullscreen-toggle').prop('checked', document.fullscreen);
-  lockOrientation();
 });
 
-// orientation
-$('#portrait').click(function() {
-  ori = 'landscape';
-  lockOrientation();
-});
-$('#landscape').click(function() {
-  ori = 'portrait';
-  lockOrientation();
-});
-
-// modes
-$('#touch-ctrl').click(function() {
-  control = 'touch';
-  // update menu
-  $('#touch-ctrl').addClass('active');
-  $('#motion-ctrl').removeClass('active');
-  $('#present-ctrl').removeClass('active');
-});
-$('#motion-ctrl').click(function() {
-  control = 'motion';
-  // update menu
-  $('#touch-ctrl').removeClass('active');
-  $('#motion-ctrl').addClass('active');
-  $('#present-ctrl').removeClass('active');
-});
-$('#present-ctrl').click(function() {
-  control = 'present';
-  // update menu
-  $('#touch-ctrl').removeClass('active');
-  $('#motion-ctrl').removeClass('active');
-  $('#present-ctrl').addClass('active');
-});
 
 $('#passcode').click(function() {
   passcode = prompt('Enter a passcode');
 });
 
-$('#about').click(function() {
-  if (confirm('Webby Mouse: Air mouse made with full web technology.\n' +
-    'Visit our web site for more information?')) {
-    open('https://github.com/gasolin/webbymouse');
-  }
-});
-
-window.addEventListener('deviceorientation', function(e) {
-  if (control === 'motion') {
-    var x = e.gamma;
-    var y = e.beta;
-    y = (y > 90) ? 90 : y;
-    y = (y < -90) ? -90 : y;
-
-    x += 90;
-    y += 90;
-    emitMouse(x, y, 'motion');
-  }
-});

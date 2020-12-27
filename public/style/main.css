@@ -1,34 +1,41 @@
-mark {
-    background-color: #ff9;
-    color: #000;
-    font-style: normal;
-    font-weight: bold;
-}
-
 .hidden {
     display: none;
 }
 
-
-body {
-    padding-top: 50px;
-}
-@media screen and (max-width: 768px) {
-    body {
-        padding-top: 50px;
-    }
-}
-
-.touchpad {
-    position: fixed;
-    display: block;
-    width: 100%;
-    height: calc(100% - 50px);
-}
+.disable-dbl-tap-zoom {
+    touch-action: manipulation;
+  }
 
 .navbar-item {
     display: block;
     padding: 5px 5px;
     clear: both;
     font-weight: 400;
+}
+.mainView img{
+    max-width: 100%;
+    height: auto;
+}
+.topView img{
+    max-width: 100%;
+    height: auto; 
+}
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+.btn.btn-sm{
+    font-size: 0.84rem;
+    padding: 0px;
+    margin: 6px;
+    text-align: center;
+    align-self: center;
+}
+.actions{
+    height: 8.1vh;
 }

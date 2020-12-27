@@ -63,11 +63,11 @@ $(document).ready(function() {
 
   var menu = new gui.Menu();
   menu.append(new gui.MenuItem({
-    label: 'About Webby Mouse',
+    label: 'About Sim Control',
     click: function() {
-      if (confirm('Webby Mouse: Air mouse made with full web technology.\n' +
+      if (confirm('Webby Mouse\n' +
         'Visit our web site for more information?')) {
-        gui.Shell.openExternal('https://github.com/gasolin/webbymouse');
+        gui.Shell.openExternal('https://github.com/ravisyamala/simcontrol');
       }
     }
   }));
