@@ -14,7 +14,26 @@ var io = require('socket.io')(http);
 var config = require('./public/js/config.js'); 
 var exec = require('child_process').execFile;
 
-var curRemoteMode = 'general'; 
+var mainView = {
+  X: 3226,
+  Y: 954,
+  W: 597,
+  H: 1400
+};
+
+var mainViewMap = {
+  X: 3226,
+  Y: 954,
+  W: 597,
+  H: 1400
+};
+
+var mainViewHole = {
+  X: 1459,
+  Y: 635,
+  W: 900,
+  H: 1866
+};
 
 var ref = require('ref-napi');
 var ffi = require('ffi-napi');
@@ -24,7 +43,6 @@ var user32 = new ffi.Library('user32', {
     'GetForegroundWindow': ['long', []],
     'GetWindowTextA' : ['long', ['long', stringPtr, 'long']]
 });
-
 
 function checkMode(){
   var foregroundHWnd = user32.GetForegroundWindow(); 
@@ -67,7 +85,7 @@ function broadcastRegion(emitName,x,y,width,height){
 }
 
 function broadcastMap(){
-  broadcastRegion('update-map',3226,954,597,1400);
+  broadcastRegion('update-map',mainView.X,mainView.Y,mainView.W,mainView.H);
 }
 
 
@@ -75,22 +93,29 @@ function broadcastScoreboard(){
   broadcastRegion('update-scoreboard',0,0,990,180);
 }
 
-var putter =function(){
-   console.log("putter() start");
-   exec('hotkeys\\gspro_selectputter.exe', function(err, data) {  
-        console.log(err)
-        console.log(data.toString());                       
-    });  
+function gsProOpenOptions(){
+  robot.setMouseDelay(50); 
+  robot.moveMouse(getCord(3816),getCord(77));
+  robot.mouseClick(); 
+  robot.moveMouse(getCord(3620),getCord(506));
+  robot.mouseClick(); 
 }
-
 
 var DIM = {
   X: 3840,
   Y: 2160,
 };
+
+
+
+var DPI = 1.5; 
 // x, y parameters are in range from 0 to getScreenSize()
 function getPixelColor(x, y) {
     return robot.getPixelColor(getRealX(x), getRealY(y));
+}
+
+function getCord(p){
+  return p/DPI; 
 }
 
 function getRealX(x){
@@ -143,7 +168,13 @@ io.on('connection', function(socket) {
   socket.on('key', function(cmd){
     console.log(cmd+' received'); 
     if(cmd=='putter'){
-      putter(); 
+      //putter(); 
+      robot.setMouseDelay(50); 
+      robot.moveMouse(getCord(69),getCord(2088));
+      //1040 1929
+      robot.mouseClick(); 
+      robot.moveMouse(getCord(1040),getCord(1929));
+      robot.mouseClick(); 
     }else if(cmd=='viewHole'){
       robot.keyTap('f3'); 
     }else if(cmd=='freeFloat'){
@@ -151,7 +182,7 @@ io.on('connection', function(socket) {
     }else if(cmd=='greenGrid'){
       robot.keyTap('G'); 
     }else if(cmd=='losInvisible'){
-      robot.keyTap('B'); 
+      robot.keyTap('B');
     }else if(cmd=='clubUp'){
       robot.keyTap('K'); 
     }else if(cmd=='clubDown'){
@@ -160,11 +191,52 @@ io.on('connection', function(socket) {
       robot.keyTap('up'); 
     }else if(cmd=='keyDown'){
       robot.keyTap('down'); 
-    }else if(cmd=='keyLeft'){
-      console.log('trying to go left'); 
-      robot.keyTap('left'); 
+    }else if (cmd=='greenView'){
+      mainView= mainViewHole; 
+    } else if (cmd=='holeView'){
+      mainView = mainViewMap; 
+    }
+    else if (cmd=='simDrop'){
+      gsProOpenOptions(); 
+      robot.moveMouse(getCord(1411),getCord(1064));
+      robot.mouseClick(); 
+    }
+    else if (cmd=='mulligan'){
+      gsProOpenOptions(); 
+      robot.moveMouse(getCord(2422),getCord(1164));
+      robot.mouseClick(); 
+    }
+    else if (cmd=='concede'){
+      gsProOpenOptions(); 
+      robot.moveMouse(getCord(2413),getCord(1059));
+      robot.mouseClick(); 
+    }
+    else if (cmd=='rehit'){
+      gsProOpenOptions(); 
+      robot.moveMouse(getCord(1913),getCord(1158));
+      robot.mouseClick(); 
+    }
+    else if (cmd=='closeBallOptions'){
+      robot.moveMouse(getCord(2591),getCord(896));
+      robot.mouseClick(); 
+    }
+    else if(cmd=='keyLeft'){
+      robot.moveMouse(1200,800);
+      robot.mouseToggle("down");
+      setTimeout(function()
+      {
+          robot.mouseToggle("up");
+      
+      }, 300);
+      
     }else if(cmd=='keyRight'){
-      robot.keyTap('right'); 
+      robot.moveMouse(1400,800);
+      robot.mouseToggle("down");
+      setTimeout(function()
+      {
+          robot.mouseToggle("up");
+      
+      }, 300);
     }
   }); 
   socket.on('mouse', function(pos) {
@@ -175,13 +247,13 @@ io.on('connection', function(socket) {
     }
     if (pos.cmd == 'move' || pos.cmd == 'scroll' || pos.cmd == 'pan'|| pos.cmd=='press' || pos.cmd=='pressup')  {
       mouse = robot.getMousePos();
-      console.log("action sensed: "+ pos.cmd); 
+      //console.log("action sensed: "+ pos.cmd); 
       //console.log("Pos is at x:" + pos.x + " y:" + pos.y);
       //console.log("Mouse is at x:" + mouse.x + " y:" + mouse.y);
       //newX = Math.max( mouse.x + pos.x * adjustment , 2150+pos.x*adjustment);
-      newX =pos.x >= 0 ? 2150+pos.x*1.5 : mouse.x; 
+      newX =pos.x >= 0 ? mainView.X/DPI +pos.x* DPI: mouse.x; 
      // newY = Math.max( mouse.y + pos.y * adjustment , 638+pos.y*adjustment);
-      newY = pos.y >= 0 ? 638+pos.y*1.5 : mouse.y;
+      newY = pos.y >= 0 ? mainView.Y/DPI +pos.y*DPI : mouse.y;
       //console.log('Offset is x:'+ newX + ' y:' + newY);
       //robot.moveMouseSmooth(newX, newY);
       robot.moveMouse(newX, newY);

@@ -1,9 +1,9 @@
 {
-  "name": "sim-control",
+  "name": "simcontrol",
   "version": "0.0.1",
-  "description": "air mouse and touchpad made by web technology",
-  "homepage": "https://github.com/gasolin/webbymouse",
-  "bugs": "https://github.com/gasolin/webbymouse/issues",
+  "description": "Used for controlling Golf Simulators with a mobile web ui.",
+  "homepage": "https://github.com/ravisyamala/simcontrol",
+  "bugs": "https://github.com/ravisyamala/simcontrol/issues",
   "author": {
     "name": "Ravi Syamala",
     "email": "ravisy@gmail.com",
@@ -33,7 +33,8 @@
     "nw": "^0.50.2",
     "ref-napi": "^3.0.1",
     "robotjs": "^0.6.0",
-    "socket.io": "^3.0.4"
+    "socket.io": "^3.0.4",
+    "tesseract.js": "^2.1.4"
   },
   "devDependencies": {
     "bower": "^1.8.8",
@@ -44,9 +45,14 @@
     "gulp-jscs-stylish": "^1.1.1",
     "gulp-jsonlint": "^1.1.0",
     "gulp-sloc": "^1.0.4",
-    "jscs-jsdoc": "^1.1.0"
+    "jscs-jsdoc": "^1.1.0",
+    "nwjs-builder-phoenix": "^1.15.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dist": "build --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ ."
+  },
+  "build": {
+    "nwVersion": "0.14.7"
   }
 }

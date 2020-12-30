@@ -14,7 +14,7 @@ $(document).ready(function() {
 
   // show ip address
   var ifaces = os.networkInterfaces();
-  var PORT = 8000;
+  var PORT = 80;
 
   var url = '';
   Object.keys(ifaces).forEach(function(ifname) {

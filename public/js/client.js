@@ -140,7 +140,7 @@ mc.on('rightclick', function(e) {
 
 // menu functions
 $('.actions').on('click',function(event){
-  emitKeyboard(event.target.id); 
+  emitKeyboard(event.target.id || event.target.parentElement.id); 
 }); 
 
 var isTouchDevice = 'ontouchstart' in document.documentElement;
