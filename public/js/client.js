@@ -63,10 +63,10 @@ var handleKeyDown = function(e){
   e = e || window.event;
   var myId = (e.currentTarget || e.srcElement ).id;
   curKey=myId; 
-  console.log('mouse down received: '+ curKey); 
+  //console.log('mouse down received: '+ curKey); 
   emitKeyboard(myId);  
   keyInterval = setInterval(function(){
-    console.log('mouse down sent: '+ curKey); 
+   // console.log('mouse down sent: '+ curKey); 
     emitKeyboard(myId);  
     },100);
     return false;
@@ -76,7 +76,7 @@ var handleKeyDown = function(e){
 var handleKeyUpOut = function(e){
   e = e || window.event;
   var myId = (e.currentTarget || e.srcElement).id;
-  console.log('mouse up received: '+ curKey); 
+ // console.log('mouse up received: '+ curKey); 
   curKey=''; 
   clearInterval(keyInterval);
   return false;  
@@ -86,7 +86,7 @@ var handlePan = function(eventName, e) {
   if (e.type == eventName + 'start' || e.type=='press') {
     delta = null;
     moving = true;
-    console.log('start ' + eventName);
+    //console.log('start ' + eventName);
     emitMouse(0, 0, eventName + 'start');
   }
   if (e.type == eventName + 'end'||e.type=='pressup') {

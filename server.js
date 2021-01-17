@@ -5,7 +5,6 @@ var _ = require('lodash');
 var ps = require('current-processes'); 
 
 let robot = require("robotjs");
-let Jimp = require('jimp');
 
 var express = require('express');
 var app = express();
@@ -13,6 +12,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var config = require('./public/js/config.js'); 
 // @TODO eventual attempt at faster resizing library: const sharp = require('sharp');
+
+const sharp = require('sharp');
 var curMainView = 'mainViewMap'; 
 
 var mainView = {
@@ -52,6 +53,12 @@ var user32 = new ffi.Library('user32', {
     'GetWindowTextA' : ['long', ['long', stringPtr, 'long']]
 });
 
+const swapRedAndBlueChannel = bmp => {
+  for (let i = 0; i < (bmp.width * bmp.height) * 4; i +=4) { // swap red and blue channel
+    [bmp.image[i], bmp.image[i+2]] = [bmp.image[i+2], bmp.image[i]]; // red channel
+  }
+};
+
 function checkMode(){
   var foregroundHWnd = user32.GetForegroundWindow(); 
   var buf, name, ret;
@@ -61,6 +68,12 @@ function checkMode(){
   console.log("Current window foregrounded is: "+_.startsWith(buf.readCString(),'GSpro')); 
 }
 
+function changeMainView(changeToView, cmd){
+  mainView= changeToView; 
+  curMainView = cmd; 
+  robot.setMouseDelay(50); 
+  robot.moveMouse(getCord(changeToView.X+changeToView.W/2),getCord(changeToView.Y+changeToView.H/2));
+}
 
 function checkForProcesses(){
   ps.get(function(err,processes){
@@ -74,30 +87,13 @@ function checkForProcesses(){
 
 function broadcastRegion(emitName,x,y,width,height){
   let image = robot.screen.capture(x,y,width,height);
-  // sharp(image.image)
-  // .rotate()
-  // .resize(Math.round(image.width/4),Math.round(image.height/4))
-  // .toBuffer()
-  // .then( data => { console.log("emitting some data"); io.emit(emitName,data); })
-  // .catch( err => { });
+  swapRedAndBlueChannel(image); 
+  const data =sharp(image.image,{raw: {width: image.width, height: image.height, channels: 4}})
+  .toFormat('png')
+  .removeAlpha()
+  .resize(Math.round(image.width/2),Math.round(image.height/2))
+  .toBuffer((err, data, info) => {io.emit(emitName,data); }); 
 
-  for(let i=0; i < image.image.length; i++){
-      if(i%4 == 0){
-          [image.image[i], image.image[i+2]] = [image.image[i+2], image.image[i]];
-      }
-  }
-
-  var jimg = new Jimp(image.width, image.height);
-  jimg.bitmap.data = image.image;
-  jimg.resize(image.width/2,image.height/2); 
-  jimg.rgba(true);
-  jimg.filterType(1); 
-  jimg.deflateLevel(5);
-  jimg.deflateStrategy(1);
-  jimg.getBuffer(Jimp.MIME_PNG, (err, result)=>{
-      io.emit(emitName,result);
-  });  
-  //auto pop out of option dialog ()
   if(curMainView === 'optionsView'){
       if(robot.getPixelColor(getCord(2571), getCord(301)) === '000000')
         console.log('I would have tried to go back to map view'); 
@@ -110,7 +106,7 @@ function broadcastMap(){
 
 
 function broadcastScoreboard(){
-  broadcastRegion('update-scoreboard',0,0,990,180);
+  broadcastRegion('update-scoreboard',0,0,990,240);
 }
 
 function gsProOpenOptions(){
@@ -212,14 +208,12 @@ io.on('connection', function(socket) {
     }else if(cmd=='keyDown'){
       robot.keyTap('down'); 
     }else if (cmd=='greenView'){
-      mainView= mainViewHole; 
-      curMainView = cmd; 
+      changeMainView(mainViewHole,cmd); 
+
     } else if (cmd=='holeView'){
-      mainView = mainViewMap; 
-      curMainView = cmd;
+      changeMainView(mainViewMap,cmd); 
     }else if (cmd=='optionsView'){
-      mainView= mainViewOptions; 
-      curMainView = cmd;
+      changeMainView(mainViewOptions,cmd);
     }
     else if (cmd=='simDrop'){
       gsProOpenOptions(); 
@@ -272,18 +266,18 @@ io.on('connection', function(socket) {
     }
     if (pos.cmd == 'move' || pos.cmd == 'scroll' || pos.cmd == 'pan'|| pos.cmd=='press' || pos.cmd=='pressup')  {
       mouse = robot.getMousePos();
-      //console.log("action sensed: "+ pos.cmd); 
+      console.log("action sensed: "+ pos.cmd); 
       //console.log("Pos is at x:" + pos.x + " y:" + pos.y);
       //console.log("Mouse is at x:" + mouse.x + " y:" + mouse.y);
       //newX = Math.max( mouse.x + pos.x * adjustment , 2150+pos.x*adjustment);
-      newX =pos.x >= 0 ? getCord(mainView.X) +pos.x* DPI: mouse.x; 
+      newX =pos.x >= 0 ? getCord(mainView.X) +pos.x* DPI: getCord(mainView.X); 
      // newY = Math.max( mouse.y + pos.y * adjustment , 638+pos.y*adjustment);
-      newY = pos.y >= 0 ? getCord(mainView.Y) +pos.y*DPI : mouse.y;
+      newY = pos.y >= 0 ? getCord(mainView.Y) +pos.y*DPI : getCord(mainView.Y);
       //console.log('Offset is x:'+ newX + ' y:' + newY);
       //robot.moveMouseSmooth(newX, newY);
       robot.moveMouse(newX, newY);
       mouse = robot.getMousePos();
-      console.log("after x:" + mouse.x + " y:" + mouse.y);
+      //console.log("after x:" + mouse.x + " y:" + mouse.y);
     }  else if (pos.cmd == 'click') {
       robot.mouseClick();
       // robot.typeString(msg);

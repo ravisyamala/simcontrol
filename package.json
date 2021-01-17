@@ -35,7 +35,8 @@
     "robotjs": "^0.6.0",
     "sharp": "^0.27.0",
     "socket.io": "^3.0.4",
-    "tesseract.js": "^2.1.4"
+    "tesseract.js": "^2.1.4",
+    "worker-timers": "^7.0.9"
   },
   "devDependencies": {
     "bower": "^1.8.8",

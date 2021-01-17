@@ -33,7 +33,11 @@
         <div class="row">
           <div class="col-9 col-sm-6 col-lg-8 pt-1 m-0 p-0">
             <img src="" class="img-fluid pb-2" id="topView">
-            <img src="" class="img-fluid" id="mainView">
+            <img src="" class="img-fluid pb-0" id="mainView">
+            <div class="btn-group shadow-0 unselectable" role="group">
+              <button class="btn-primary btn-block m-1 p-3 actions" id="keyLeft"><i class="fas fa-angle-left"></i></button>
+              <button class="btn-primary btn-block m-1 p-3 actions" id="keyRight"><i class="fas fa-angle-right"></i></button>
+            </div>
           </div>
           <div class="col-3 col-lg-4 m-0 p-0 mt-5">
               <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="putter">Putter</button>
@@ -44,20 +48,13 @@
               <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="simDrop">Drop</button>
               <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="rehit">Rehit</button>
               <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="concede">Concede</button>
-              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="closeBallOptions">Ball Opts</button>
+              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="closeBallOptions">Close Opts</button>
               <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
                 <div class="btn-group-sm me-2" role="group" aria-label="First group">
                   <button class="btn btn-primary actions" id="holeView"><i class="fas fa-globe-americas"></i></button>
                   <button class="btn btn-primary actions" id="greenView"><i class="fas fa-crosshairs"></i></button>
                   <button class="btn btn-primary actions" id="optionsView"><i class="fas fa-exclamation-triangle"></i></button>
                 </div>
-              </div>
-              <div class="btn-group shadow-0 unselectable" role="group">
-
-              </div>
-              <div class="btn-group shadow-0 unselectable" role="group">
-                <button class="btn-primary btn-block m-1 p-3 actions" id="keyLeft"><i class="fas fa-angle-left"></i></button>
-                <button class="btn-primary btn-block m-1 p-3 actions" id="keyRight"><i class="fas fa-angle-right"></i></button>
               </div>
           </div>
         </div>
