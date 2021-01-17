@@ -12,19 +12,20 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var config = require('./public/js/config.js'); 
-var exec = require('child_process').execFile;
+// @TODO eventual attempt at faster resizing library: const sharp = require('sharp');
+var curMainView = 'mainViewMap'; 
 
 var mainView = {
-  X: 3226,
+  X: 3126,
   Y: 954,
-  W: 597,
+  W: 797,
   H: 1400
 };
 
 var mainViewMap = {
-  X: 3226,
+  X: 3126,
   Y: 954,
-  W: 597,
+  W: 797,
   H: 1400
 };
 
@@ -33,6 +34,13 @@ var mainViewHole = {
   Y: 635,
   W: 900,
   H: 1866
+};
+
+var mainViewOptions = {
+  X: 2311,
+  Y: 17,
+  W: 559,
+  H: 636
 };
 
 var ref = require('ref-napi');
@@ -66,6 +74,13 @@ function checkForProcesses(){
 
 function broadcastRegion(emitName,x,y,width,height){
   let image = robot.screen.capture(x,y,width,height);
+  // sharp(image.image)
+  // .rotate()
+  // .resize(Math.round(image.width/4),Math.round(image.height/4))
+  // .toBuffer()
+  // .then( data => { console.log("emitting some data"); io.emit(emitName,data); })
+  // .catch( err => { });
+
   for(let i=0; i < image.image.length; i++){
       if(i%4 == 0){
           [image.image[i], image.image[i+2]] = [image.image[i+2], image.image[i]];
@@ -82,6 +97,11 @@ function broadcastRegion(emitName,x,y,width,height){
   jimg.getBuffer(Jimp.MIME_PNG, (err, result)=>{
       io.emit(emitName,result);
   });  
+  //auto pop out of option dialog ()
+  if(curMainView === 'optionsView'){
+      if(robot.getPixelColor(getCord(2571), getCord(301)) === '000000')
+        console.log('I would have tried to go back to map view'); 
+  }
 }
 
 function broadcastMap(){
@@ -193,8 +213,13 @@ io.on('connection', function(socket) {
       robot.keyTap('down'); 
     }else if (cmd=='greenView'){
       mainView= mainViewHole; 
+      curMainView = cmd; 
     } else if (cmd=='holeView'){
       mainView = mainViewMap; 
+      curMainView = cmd;
+    }else if (cmd=='optionsView'){
+      mainView= mainViewOptions; 
+      curMainView = cmd;
     }
     else if (cmd=='simDrop'){
       gsProOpenOptions(); 
@@ -222,7 +247,7 @@ io.on('connection', function(socket) {
     }
     else if(cmd=='keyLeft'){
       robot.moveMouse(1200,800);
-      robot.mouseToggle("down");
+      robot.mouseToggle("down"); 
       setTimeout(function()
       {
           robot.mouseToggle("up");
@@ -251,9 +276,9 @@ io.on('connection', function(socket) {
       //console.log("Pos is at x:" + pos.x + " y:" + pos.y);
       //console.log("Mouse is at x:" + mouse.x + " y:" + mouse.y);
       //newX = Math.max( mouse.x + pos.x * adjustment , 2150+pos.x*adjustment);
-      newX =pos.x >= 0 ? mainView.X/DPI +pos.x* DPI: mouse.x; 
+      newX =pos.x >= 0 ? getCord(mainView.X) +pos.x* DPI: mouse.x; 
      // newY = Math.max( mouse.y + pos.y * adjustment , 638+pos.y*adjustment);
-      newY = pos.y >= 0 ? mainView.Y/DPI +pos.y*DPI : mouse.y;
+      newY = pos.y >= 0 ? getCord(mainView.Y) +pos.y*DPI : mouse.y;
       //console.log('Offset is x:'+ newX + ' y:' + newY);
       //robot.moveMouseSmooth(newX, newY);
       robot.moveMouse(newX, newY);

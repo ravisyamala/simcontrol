@@ -28,101 +28,40 @@
 
     <!--Main layout-->
     <main style="">
-      <div class="container-fluid unselectable pr-4">
-        <div class="row equal align-items-center unselectable">
-        <div class="col-3 p-1 wow fadeIn " id="logo">
-                 <!-- SideNav slide-out button -->
-<a href="#" data-activates="slide-out" class="btn btn-dark p-3 button-collapse"><i class="fas fa-golf-ball"></i></a>
+      <div class="container-fluid unselectable">
 
-<!-- Sidebar navigation -->
-<div id="slide-out" class="side-nav2 side special-color-dark">
-<ul class="custom-scrollbar">
-  <!-- Logo -->
-  <li>
-    <div class="logo-wrapper waves-light">
-      <a href="#"><img src="https://mdbootstrap.com/img/logo/mdb-transparent.png"
-          class="img-fluid flex-center"></a>
-    </div>
-  </li>
-  <!--/. Logo -->
-  <!--Social-->
-  <li>
-    <ul class="social">
-      <li><a href="#" class="icons-sm fb-ic"><i class="fab fa-facebook-f"> </i></a></li>
-      <li><a href="#" class="icons-sm pin-ic"><i class="fab fa-pinterest"> </i></a></li>
-      <li><a href="#" class="icons-sm gplus-ic"><i class="fab fa-google-plus-g"> </i></a></li>
-      <li><a href="#" class="icons-sm tw-ic"><i class="fab fa-twitter"> </i></a></li>
-    </ul>
-  </li>
-  <!--/Social-->
-  <!--Search Form-->
-  <li>
-    <form class="search-form" role="search">
-      <div class="form-group md-form mt-0 pt-1 waves-light">
-        <input type="text" class="form-control" placeholder="Search">
-      </div>
-    </form>
-  </li>
-  <!--/.Search Form-->
-  <!-- Side navigation links -->
-  <li>
-    <ul class="collapsible collapsible-accordion">
-      <li><a class="collapsible-header waves-effect"><i class="fas fa-chevron-right"></i> Submit
-          blog</a>
-      </li>
-      <li><a class="collapsible-header waves-effect"><i class="far fa-hand-pointer"></i>
-          Instruction</a>
-      </li>
-      <li><a class="collapsible-header waves-effect"><i class="fas fa-eye"></i> About</a>
-      </li>
-      <li><a class="collapsible-header waves-effect"><i class="far fa-envelope"></i> Contact me</a>
-      </li>
-    </ul>
-  </li>
-  <!--/. Side navigation links -->
-</ul>
-<div class="sidenav-bg"></div>
-</div>  
-        </div> 
-
-  
-
-            <div class="col-9 p-1 pr-0 view view-cascade overlay wow fadeIn ">
-              <img src="" class="img-fluid" id="topView">
-            </div> 
-          </div>
-        <div class="row equal unselectable">
-          <div class="col-3 p-0 m-0">
-            <div class="btn-toolbar unselectable" role="toolbar" aria-label="Toolbar with button groups">
-              <div class="btn-group-vertical shadow-0 mr-0 unselectable" role="group">
-                  <button class="btn btn-default btn-sm actions" id="putter">Putter</button>
-                  <button class="btn btn-default btn-sm actions" id="viewHole">Change View</button>
-                  <button class="btn btn-default btn-sm actions" id="greenGrid">Green Grid</button>
-                  <button class="btn btn-default btn-sm actions" id="losInvisible">Obstacle View</button>
-                  <button class="btn btn-default btn-sm actions" id="mulligan">Mulligan</button>
-                  <button class="btn btn-default btn-sm actions" id="simDrop">Sim Drop</button>
-                  <button class="btn btn-default btn-sm actions" id="rehit">Rehit</button>
-                  <button class="btn btn-default btn-sm actions" id="concede">Concede</button>
-                  <button class="btn btn-default btn-sm actions" id="closeBallOptions">Close Ball Options</button>
-              </div>
-              <div class="btn-group shadow-0 m-0 unselectable" role="group">
-                <button class=" -roundedbtn btn-floating btn-purple m-1 actions" id="holeView"><i class="fas fa-globe-americas"></i></button>
-                <button class=" -roundedbtn btn-floating btn-deep-purple m-1 actions" id="greenView"><i class="fas fa-crosshairs"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="col-9 pl-1 pt-1 pb-0 pr-0 m-0">
-            <div class="mainView view-cascade overlay wow fadeIn">
-              <img src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/8-col/img (132).jpg" class="img-fluid" id="mainView">
-
-            </div> 
-          </div>
-        </div>
         <div class="row">
-          <div class="col"></div>
-          <div class="col"><button class="btn-dark arrows btn btn-default btn-sm actions" id="keyLeft"><i class="fas fa-arrow-left"></i></button></div>
-          <div class="col"><button class="btn-dark arrows btn btn-default btn-sm actions" id="keyRight"><i class="fas fa-arrow-right"></i></button></div>
+          <div class="col-9 col-sm-6 col-lg-8 pt-1 m-0 p-0">
+            <img src="" class="img-fluid pb-2" id="topView">
+            <img src="" class="img-fluid" id="mainView">
+          </div>
+          <div class="col-3 col-lg-4 m-0 p-0 mt-5">
+              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="putter">Putter</button>
+              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="viewHole">Zoom</button>
+              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="greenGrid">Grid</button>
+              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="losInvisible">Obstacle</button>
+              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="mulligan">Mulligan</button>
+              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="simDrop">Drop</button>
+              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="rehit">Rehit</button>
+              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="concede">Concede</button>
+              <button class="btn-secondary btn-lg btn-block actions m-1 p-1" id="closeBallOptions">Ball Opts</button>
+              <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group-sm me-2" role="group" aria-label="First group">
+                  <button class="btn btn-primary actions" id="holeView"><i class="fas fa-globe-americas"></i></button>
+                  <button class="btn btn-primary actions" id="greenView"><i class="fas fa-crosshairs"></i></button>
+                  <button class="btn btn-primary actions" id="optionsView"><i class="fas fa-exclamation-triangle"></i></button>
+                </div>
+              </div>
+              <div class="btn-group shadow-0 unselectable" role="group">
+
+              </div>
+              <div class="btn-group shadow-0 unselectable" role="group">
+                <button class="btn-primary btn-block m-1 p-3 actions" id="keyLeft"><i class="fas fa-angle-left"></i></button>
+                <button class="btn-primary btn-block m-1 p-3 actions" id="keyRight"><i class="fas fa-angle-right"></i></button>
+              </div>
+          </div>
         </div>
+
       </div>
 
     </main>
